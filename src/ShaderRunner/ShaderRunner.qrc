@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="MainWindow">
+    <file>resources/ShaderRunner_icon.ico</file>
+  </qresource>
+  <qresource prefix="Player">
+    <file>resources/play.png</file>
+    <file>resources/pause.png</file>
+    <file>resources/stop.png</file>
+    <file>resources/rewind.png</file>
+    <file>resources/fforward.png</file>
+    <file>resources/record.png</file>
+  </qresource>
+</RCC>
