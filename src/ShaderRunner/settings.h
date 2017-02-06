@@ -1,3 +1,6 @@
+#ifndef SHADERRUNNER_SETTINGS_H
+#define SHADERRUNNER_SETTINGS_H
+
 // MIT License
 //
 // Copyright(c) 2017 Piotr 'utak3r' Borys
@@ -20,19 +23,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <QApplication>
-#include <QMessageBox>
-#include "srMainWindow.h"
-#include "settings.h"
+#include <QVariant>
 
-int main(int argc, char *argv[])
+class Settings
 	{
-	QApplication a(argc, argv);
+public:
+	static void setSettingsFile(const QString& aFile);
+	static const QString& settingsFile();
 
-	Settings::setSettingsFile(QStringLiteral("ShaderRunner.ini"));
+	static void writeValue(const QString& aSection, const QString& aName, const QVariant& aValue);
+	static QVariant readValue(const QString& aSection, const QString& aName, const QVariant& aDefaultValue = QVariant());
 
-	srMainWindow w;
-	w.show();
+	static bool containsSection(const QString& aSection);
+	static bool containsValue(const QString& aSection, const QString& aName);
 
-	return a.exec();
-	}
+	static void removeSection(const QString& aSection);
+	static void removeValue(const QString& aSection, const QString& aName);
+
+	static QStringList sectionItems(const QString& aSection);
+
+protected:
+	Settings();
+
+private:
+	static QString theSettingsFile;
+
+	};
+
+#endif // SHADERRUNNER_SETTINGS_H

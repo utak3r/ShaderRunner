@@ -9,6 +9,8 @@ add_executable (ShaderRunner ${GUI_TYPE}
 					srMainWindow.h
 					srMainWindow.ui
 					ShaderRunner.qrc
+					settings.cpp
+					settings.h
 					)
 set_property (TARGET ShaderRunner PROPERTY FOLDER "Shader_App")
 
