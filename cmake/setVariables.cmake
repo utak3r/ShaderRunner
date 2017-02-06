@@ -1,0 +1,10 @@
+set(LIBS_EXT_FOLDER c:/Libraries)
+set(PROJECT_ROOT ${CMAKE_SOURCE_DIR})
+
+string(REGEX REPLACE "\\\\" "/" QTDIR $ENV{QTDIR})
+set(QTDIRBIN ${QTDIR}/bin)
+set(QTDIRPLUGINS ${QTDIR}/plugins)
+set(QTDIRQML ${QTDIR}/qml)
+set(QTIFWDIR "c:/Qt/QtIFW-2.0.3")
+
+set(FFMPEG ${LIBS_CONTRIB_FOLDER}/ffmpeg)
