@@ -25,6 +25,7 @@
 #include <GLViewWidget.h>
 #include <QFileDialog>
 #include <QSplitter>
+#include "settings.h"
 
 srMainWindow::srMainWindow(QWidget* aParent) :
 	QMainWindow(aParent),
@@ -33,10 +34,12 @@ srMainWindow::srMainWindow(QWidget* aParent) :
 	ui->setupUi(this);
 	decorateSplitter(ui->splitter);
 	connectButtons();
+	loadConfig();
 	}
 
 srMainWindow::~srMainWindow()
 	{
+	storeConfig();
 	delete ui;
 	}
 
@@ -112,6 +115,26 @@ void srMainWindow::decorateSplitter(QSplitter* splitter)
 		}
 	}
 
+void srMainWindow::loadConfig()
+	{
+	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("Geometry")))
+		restoreGeometry(Settings::readValue(QStringLiteral("Window"), QStringLiteral("Geometry")).toByteArray());
+	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("State")))
+		restoreState(Settings::readValue(QStringLiteral("Window"), QStringLiteral("State")).toByteArray());
+
+	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("Splitter_geometry")))
+		ui->splitter->restoreGeometry(Settings::readValue(QStringLiteral("Window"), QStringLiteral("Splitter_geometry")).toByteArray());
+	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("Splitter_state")))
+		ui->splitter->restoreState(Settings::readValue(QStringLiteral("Window"), QStringLiteral("Splitter_state")).toByteArray());
+	}
+
+void srMainWindow::storeConfig()
+	{
+	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Geometry"), saveGeometry());
+	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("State"), saveState());
+	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Splitter_geometry"), ui->splitter->saveGeometry());
+	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Splitter_state"), ui->splitter->saveState());
+	}
 
 void srMainWindow::OpenShaderSource()
 	{

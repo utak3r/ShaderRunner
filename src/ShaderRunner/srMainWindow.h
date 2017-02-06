@@ -52,6 +52,8 @@ public slots:
 protected:
 	void connectButtons();
 	void decorateSplitter(QSplitter* splitter);
+	void loadConfig();
+	void storeConfig();
 
 private:
 	Ui::srMainWindow *ui;
