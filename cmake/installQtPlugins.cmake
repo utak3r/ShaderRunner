@@ -1,9 +1,6 @@
 
 if (${MSVC_BUILD_CONFIG_DIR} STREQUAL "Debug")
 	set (IMGFORMATS
-			${QTDIRPLUGINS}/imageformats/qddsd.dll
-			${QTDIRPLUGINS}/imageformats/qgifd.dll
-			${QTDIRPLUGINS}/imageformats/qicnsd.dll
 			${QTDIRPLUGINS}/imageformats/qicod.dll
 			${QTDIRPLUGINS}/imageformats/qjpegd.dll
 			${QTDIRPLUGINS}/imageformats/qsvgd.dll
@@ -22,9 +19,6 @@ if (${MSVC_BUILD_CONFIG_DIR} STREQUAL "Debug")
 
 else (${MSVC_BUILD_CONFIG_DIR} STREQUAL "Debug")
 	set (IMGFORMATS
-			${QTDIRPLUGINS}/imageformats/qdds.dll
-			${QTDIRPLUGINS}/imageformats/qgif.dll
-			${QTDIRPLUGINS}/imageformats/qicns.dll
 			${QTDIRPLUGINS}/imageformats/qico.dll
 			${QTDIRPLUGINS}/imageformats/qjpeg.dll
 			${QTDIRPLUGINS}/imageformats/qsvg.dll
