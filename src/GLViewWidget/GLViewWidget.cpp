@@ -43,7 +43,8 @@ GLViewWidget::GLViewWidget(QWidget *aParent, const QColor &aBackground)
 	theAspectRatio(16.f/9.f),
 	theMousePressPos(0, 0),
 	theFPSFrames(0),
-	theShowFPS(false)
+	theShowFPS(false),
+	theAnimationStep(0.1f)
 	{
 	setParent(aParent);
 	setMinimumSize(352, 198);
@@ -270,7 +271,7 @@ void GLViewWidget::setFragmentShaderFile(const QString& aFragmentShaderFilename)
 
 void GLViewWidget::timerUpdate()
 	{
-	theGlobalTime += 0.1;
+	theGlobalTime += theAnimationStep;
 	}
 
 bool GLViewWidget::isPlaying()

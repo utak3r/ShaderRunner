@@ -42,6 +42,7 @@ public:
 	~GLViewWidget();
 
 	Q_PROPERTY(bool showFPS READ showFPS WRITE setShowFPS)
+	Q_PROPERTY(double animationStep READ animationStep WRITE setAnimationStep)
 
 public slots:
 	void setFragmentShaderSource(const QString& aFragmentShaderSource);
@@ -54,6 +55,8 @@ public slots:
 	void play();
 	void pause();
 	void rewind();
+	double animationStep() const { return theAnimationStep; }
+	void setAnimationStep(double anAnimStep) { theAnimationStep = anAnimStep; }
 
 protected slots:
 	void timerUpdate();
@@ -81,6 +84,7 @@ private:
 	bool theShowFPS;
 	int theFPSFrames;
 	QTime theFPSTime;
+	double theAnimationStep;
 	};
 
 #endif // GLVIEW_WIDGET_H

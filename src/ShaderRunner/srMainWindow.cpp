@@ -98,6 +98,17 @@ void srMainWindow::connectButtons()
 		{
 		ui->GLWidget->setShowFPS(aChecked);
 		});
+
+	// Animation time slider
+	connect(ui->sldAnimTime, &QSlider::sliderMoved, [=](int aValue)
+		{
+		ui->GLWidget->setAnimationStep((aValue != 0) ? aValue : 0.1f);
+		});
+	connect(ui->sldAnimTime, &QSlider::sliderReleased, [=]()
+		{
+		ui->sldAnimTime->setValue(0);
+		ui->GLWidget->setAnimationStep(0.1f);
+		});
 	}
 
 void srMainWindow::decorateSplitter(QSplitter* splitter)

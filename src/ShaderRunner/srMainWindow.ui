@@ -21,7 +21,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QWidget" name="">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="GLViewWidget" name="GLWidget" native="true">
           <property name="sizePolicy">
@@ -33,69 +33,101 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QPushButton" name="btnRewind">
-            <property name="text">
-             <string/>
+           <widget class="QSlider" name="sldAnimTime">
+            <property name="minimum">
+             <number>-10</number>
             </property>
-            <property name="icon">
-             <iconset resource="ShaderRunner.qrc">
-              <normaloff>:/Player/resources/rewind.png</normaloff>:/Player/resources/rewind.png</iconset>
+            <property name="maximum">
+             <number>10</number>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnPlayPause">
-            <property name="text">
-             <string/>
+            <property name="singleStep">
+             <number>1</number>
             </property>
-            <property name="icon">
-             <iconset resource="ShaderRunner.qrc">
-              <normaloff>:/Player/resources/pause.png</normaloff>:/Player/resources/pause.png</iconset>
+            <property name="pageStep">
+             <number>1</number>
             </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
+            <property name="tracking">
+             <bool>true</bool>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
+            <property name="invertedAppearance">
+             <bool>false</bool>
             </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="cbxShowFPS">
-            <property name="text">
-             <string>Show FPS</string>
+            <property name="invertedControls">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAspect169">
-            <property name="text">
-             <string>16:9</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnAspect43">
-            <property name="text">
-             <string>4:3</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnAspectSquare">
-            <property name="text">
-             <string>1:1</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QPushButton" name="btnRewind">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="ShaderRunner.qrc">
+                <normaloff>:/Player/resources/rewind.png</normaloff>:/Player/resources/rewind.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnPlayPause">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="ShaderRunner.qrc">
+                <normaloff>:/Player/resources/pause.png</normaloff>:/Player/resources/pause.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cbxShowFPS">
+              <property name="text">
+               <string>Show FPS</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnAspect169">
+              <property name="text">
+               <string>16:9</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnAspect43">
+              <property name="text">
+               <string>4:3</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnAspectSquare">
+              <property name="text">
+               <string>1:1</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
