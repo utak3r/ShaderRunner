@@ -96,15 +96,18 @@ void srMainWindow::decorateSplitter(QSplitter* splitter)
 	{
 	splitter->setHandleWidth(10);
 	QSplitterHandle *handle = splitter->handle(1);
+
 	QHBoxLayout *layout = new QHBoxLayout(handle);
 	layout->setSpacing(0);
 	layout->setMargin(0);
 
 	for (int i = 0; i < 2; ++i)
 		{
+
 		QFrame *line = new QFrame(handle);
 		line->setFrameShape(QFrame::VLine);
 		line->setFrameShadow(QFrame::Sunken);
+		line->setLineWidth(1);
 		layout->addWidget(line);
 		}
 	}
