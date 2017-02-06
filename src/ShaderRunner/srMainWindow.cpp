@@ -34,6 +34,7 @@ srMainWindow::srMainWindow(QWidget* aParent) :
 	ui->setupUi(this);
 	decorateSplitter(ui->splitter);
 	connectButtons();
+	ui->cbxShowFPS->setChecked(false);
 	loadConfig();
 	}
 
@@ -93,6 +94,10 @@ void srMainWindow::connectButtons()
 		{
 		ui->GLWidget->setAspectRatio(1.f);
 		});
+	connect(ui->cbxShowFPS, &QCheckBox::toggled, [=](bool aChecked)
+		{
+		ui->GLWidget->setShowFPS(aChecked);
+		});
 	}
 
 void srMainWindow::decorateSplitter(QSplitter* splitter)
@@ -127,8 +132,10 @@ void srMainWindow::loadConfig()
 	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("Splitter_state")))
 		ui->splitter->restoreState(Settings::readValue(QStringLiteral("Window"), QStringLiteral("Splitter_state")).toByteArray());
 
-	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("AspectRatio")))
-		ui->GLWidget->setAspectRatio(Settings::readValue(QStringLiteral("Window"), QStringLiteral("AspectRatio")).toDouble());
+	if (Settings::containsValue(QStringLiteral("Preview"), QStringLiteral("AspectRatio")))
+		ui->GLWidget->setAspectRatio(Settings::readValue(QStringLiteral("Preview"), QStringLiteral("AspectRatio")).toDouble());
+	if (Settings::containsValue(QStringLiteral("Preview"), QStringLiteral("ShowFPS")))
+		ui->cbxShowFPS->setChecked(Settings::readValue(QStringLiteral("Preview"), QStringLiteral("ShowFPS")).toBool());
 	}
 
 void srMainWindow::storeConfig()
@@ -137,7 +144,9 @@ void srMainWindow::storeConfig()
 	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("State"), saveState());
 	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Splitter_geometry"), ui->splitter->saveGeometry());
 	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Splitter_state"), ui->splitter->saveState());
-	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("AspectRatio"), ui->GLWidget->aspectRatio());
+	
+	Settings::writeValue(QStringLiteral("Preview"), QStringLiteral("AspectRatio"), ui->GLWidget->aspectRatio());
+	Settings::writeValue(QStringLiteral("Preview"), QStringLiteral("ShowFPS"), ui->GLWidget->showFPS());
 	}
 
 void srMainWindow::OpenShaderSource()

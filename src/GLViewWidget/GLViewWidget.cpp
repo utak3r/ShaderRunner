@@ -41,7 +41,9 @@ GLViewWidget::GLViewWidget(QWidget *aParent, const QColor &aBackground)
 	theAnimationTimer(nullptr),
 	theGlobalTime(0.f),
 	theAspectRatio(16.f/9.f),
-	theMousePressPos(0, 0)
+	theMousePressPos(0, 0),
+	theFPSFrames(0),
+	theShowFPS(false)
 	{
 	setParent(aParent);
 	setMinimumSize(352, 198);
@@ -211,7 +213,30 @@ void GLViewWidget::paintGL()
 
 	painter.endNativePainting();
 
+	if (theShowFPS)
+		{
+		if (const int elapsed = theFPSTime.elapsed())
+			{
+			QString framesPerSecond;
+			framesPerSecond.setNum(theFPSFrames / (elapsed / 1000.0), 'f', 2);
+			painter.setPen(Qt::black);
+			painter.setFont(QFont(QLatin1Literal("Arial"), 18));
+			painter.drawText(20, 40, framesPerSecond + QLatin1Literal(" FPS"));
+			}
+		}
+
 	painter.end();
+
+	if (theShowFPS)
+		{
+		if (!(theFPSFrames % 100))
+			{
+			theFPSTime.start();
+			theFPSFrames = 0;
+			}
+		++theFPSFrames;
+		}
+
 	update();
 	}
 

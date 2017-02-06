@@ -27,6 +27,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
+#include <QTime>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShader)
@@ -40,11 +41,15 @@ public:
 	GLViewWidget(QWidget *aParent = nullptr, const QColor &aBackground = QColor(0,0,0));
 	~GLViewWidget();
 
+	Q_PROPERTY(bool showFPS READ showFPS WRITE setShowFPS)
+
 public slots:
 	void setFragmentShaderSource(const QString& aFragmentShaderSource);
 	void setFragmentShaderFile(const QString& aFragmentShaderFilename);
 	double aspectRatio() const { return theAspectRatio; }
 	void setAspectRatio(const double anAspectRatio);
+	bool showFPS() const { return theShowFPS; }
+	void setShowFPS(bool aShow) { theShowFPS = aShow; }
 	bool isPlaying();
 	void play();
 	void pause();
@@ -73,6 +78,9 @@ private:
 	QTimer *theAnimationTimer;
 	float theGlobalTime;
 	QPoint theMousePressPos;
+	bool theShowFPS;
+	int theFPSFrames;
+	QTime theFPSTime;
 	};
 
 #endif // GLVIEW_WIDGET_H
