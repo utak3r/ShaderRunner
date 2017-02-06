@@ -126,6 +126,9 @@ void srMainWindow::loadConfig()
 		ui->splitter->restoreGeometry(Settings::readValue(QStringLiteral("Window"), QStringLiteral("Splitter_geometry")).toByteArray());
 	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("Splitter_state")))
 		ui->splitter->restoreState(Settings::readValue(QStringLiteral("Window"), QStringLiteral("Splitter_state")).toByteArray());
+
+	if (Settings::containsValue(QStringLiteral("Window"), QStringLiteral("AspectRatio")))
+		ui->GLWidget->setAspectRatio(Settings::readValue(QStringLiteral("Window"), QStringLiteral("AspectRatio")).toDouble());
 	}
 
 void srMainWindow::storeConfig()
@@ -134,6 +137,7 @@ void srMainWindow::storeConfig()
 	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("State"), saveState());
 	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Splitter_geometry"), ui->splitter->saveGeometry());
 	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("Splitter_state"), ui->splitter->saveState());
+	Settings::writeValue(QStringLiteral("Window"), QStringLiteral("AspectRatio"), ui->GLWidget->aspectRatio());
 	}
 
 void srMainWindow::OpenShaderSource()
