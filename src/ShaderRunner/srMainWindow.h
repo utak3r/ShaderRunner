@@ -33,6 +33,7 @@ namespace Ui
 	}
 
 QT_FORWARD_DECLARE_CLASS(GLViewWidget)
+QT_FORWARD_DECLARE_CLASS(QSplitter)
 
 class srMainWindow : public QMainWindow
 	{
@@ -47,6 +48,10 @@ public slots:
 	void OpenShaderSource();
 	void SaveShaderSource();
 	void SaveBufferToImage();
+
+protected:
+	void connectButtons();
+	void decorateSplitter(QSplitter* splitter);
 
 private:
 	Ui::srMainWindow *ui;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>377</height>
+    <width>895</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="GLViewWidget" name="GLWidget" native="true">
@@ -98,9 +98,15 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QTextEdit" name="textEdit">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>600</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
@@ -149,7 +155,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>895</width>
      <height>21</height>
     </rect>
    </property>

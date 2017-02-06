@@ -24,13 +24,29 @@
 #include "ui_srMainWindow.h"
 #include <GLViewWidget.h>
 #include <QFileDialog>
+#include <QSplitter>
 
 srMainWindow::srMainWindow(QWidget* aParent) :
 	QMainWindow(aParent),
 	ui(new Ui::srMainWindow)
 	{
 	ui->setupUi(this);
+	decorateSplitter(ui->splitter);
+	connectButtons();
+	}
 
+srMainWindow::~srMainWindow()
+	{
+	delete ui;
+	}
+
+void srMainWindow::exitApp()
+	{
+	close();
+	}
+
+void srMainWindow::connectButtons()
+	{
 	// Editor buttons
 	connect(ui->btnSetShader, &QPushButton::clicked, [=]()
 		{
@@ -76,15 +92,23 @@ srMainWindow::srMainWindow(QWidget* aParent) :
 		});
 	}
 
-srMainWindow::~srMainWindow()
+void srMainWindow::decorateSplitter(QSplitter* splitter)
 	{
-	delete ui;
+	splitter->setHandleWidth(10);
+	QSplitterHandle *handle = splitter->handle(1);
+	QHBoxLayout *layout = new QHBoxLayout(handle);
+	layout->setSpacing(0);
+	layout->setMargin(0);
+
+	for (int i = 0; i < 2; ++i)
+		{
+		QFrame *line = new QFrame(handle);
+		line->setFrameShape(QFrame::VLine);
+		line->setFrameShadow(QFrame::Sunken);
+		layout->addWidget(line);
+		}
 	}
 
-void srMainWindow::exitApp()
-	{
-	close();
-	}
 
 void srMainWindow::OpenShaderSource()
 	{
@@ -100,7 +124,6 @@ void srMainWindow::OpenShaderSource()
 			while (!in.atEnd())
 				{
 				ui->textEdit->append(in.readLine());
-				//ui->textEdit->setText(ui->textEdit->toPlainText() + in.readLine() + "\n");
 				}
 			file.close();
 			}

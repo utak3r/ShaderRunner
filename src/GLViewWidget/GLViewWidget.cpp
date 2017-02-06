@@ -44,7 +44,7 @@ GLViewWidget::GLViewWidget(QWidget *aParent, const QColor &aBackground)
 	theMousePressPos(0, 0)
 	{
 	setParent(aParent);
-	setMinimumSize(480, 270);
+	setMinimumSize(352, 198);
 	theAnimationTimer = new QTimer(this);
 	theAnimationTimer->setInterval(1000 / 50);
 	connect(theAnimationTimer, SIGNAL(timeout()), this, SLOT(timerUpdate()));
