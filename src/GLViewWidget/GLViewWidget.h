@@ -43,6 +43,7 @@ public:
 public slots:
 	void setFragmentShaderSource(const QString& aFragmentShaderSource);
 	void setFragmentShaderFile(const QString& aFragmentShaderFilename);
+	void setAspectRatio(const double anAspectRatio);
 	bool isPlaying();
 	void play();
 	void pause();

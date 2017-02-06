@@ -62,6 +62,18 @@ srMainWindow::srMainWindow(QWidget* aParent) :
 		{
 		ui->GLWidget->rewind();
 		});
+	connect(ui->btnAspect169, &QPushButton::clicked, [=]()
+		{
+		ui->GLWidget->setAspectRatio(16.f / 9.f);
+		});
+	connect(ui->btnAspect43, &QPushButton::clicked, [=]()
+		{
+		ui->GLWidget->setAspectRatio(4.f / 3.f);
+		});
+	connect(ui->btnAspectSquare, &QPushButton::clicked, [=]()
+		{
+		ui->GLWidget->setAspectRatio(1.f);
+		});
 	}
 
 srMainWindow::~srMainWindow()

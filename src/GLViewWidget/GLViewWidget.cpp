@@ -54,17 +54,38 @@ GLViewWidget::~GLViewWidget()
 	{
 	}
 
+void GLViewWidget::setAspectRatio(const double anAspectRatio)
+	{
+	if (anAspectRatio > 0)
+		{
+		theAspectRatio = anAspectRatio;
+		resizeGL(size().width(), size().height());
+		}
+	}
+
 void GLViewWidget::resizeGL(int aWidth, int aHeight)
 	{
-	/*int w = aWidth;
-	int h = int(w / theAspectRatio);
+	int cw = aWidth;
+	int ch = aHeight;
 
-	double s = qMin(aWidth / double(w), aHeight / double(h));
-	int ws = int(w*s);
-	int hs = int(h*s);
+	QWidget *container = nullptr;
+	if (parent() != nullptr)
+		{
+		container = qobject_cast<QWidget *>(parent());
+		cw = container->size().width();
+		ch = container->size().height();
+		}
 
-	resize(ws, hs);*/
-	theShaderProgram->setUniformValue("iResolution", QVector3D(aWidth, aHeight, 0));
+	int w = cw;
+	int h = int(cw / theAspectRatio);
+	double s = qMin(cw / double(w), ch / double(h));
+
+	if (container != nullptr)
+		{
+		setGeometry((cw - int(w*s)) / 2, (ch - int(h*s)) / 2, int(w*s), int(h*s));
+		}
+	else
+		resize(int(w*s), int(h*s));
 	}
 
 static const GLfloat vertices[4 * 2] =
