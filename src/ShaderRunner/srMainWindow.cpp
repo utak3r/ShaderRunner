@@ -26,6 +26,7 @@
 #include <QFileDialog>
 #include <QSplitter>
 #include "settings.h"
+#include "RenderToFileDialog.h"
 
 srMainWindow::srMainWindow(QWidget* aParent) :
 	QMainWindow(aParent),
@@ -59,7 +60,10 @@ void srMainWindow::connectButtons()
 		});
 	connect(ui->btnOpen, &QPushButton::clicked, this, &srMainWindow::OpenShaderSource);
 	connect(ui->btnSave, &QPushButton::clicked, this, &srMainWindow::SaveShaderSource);
+	
+	// Image buttons
 	connect(ui->btnSaveImage, &QPushButton::clicked, this, &srMainWindow::SaveBufferToImage);
+	connect(ui->btnRenderToFile, &QPushButton::clicked, this, &srMainWindow::RenderToImage);
 
 	// Player buttons
 	if (ui->GLWidget->isPlaying())
@@ -213,3 +217,15 @@ void srMainWindow::SaveBufferToImage()
 		}
 	}
 
+void srMainWindow::RenderToImage()
+	{
+	RenderToFileDialog dlg;
+	dlg.setAspectRatio(ui->GLWidget->aspectRatio());
+	if ((QDialog::DialogCode)dlg.exec() == QDialog::Accepted)
+		{
+		QString filename = dlg.filename();
+		QSize size = dlg.size();
+		QImage img = ui->GLWidget->renderOffscreen(size);
+		img.save(dlg.filename());
+		}
+	}

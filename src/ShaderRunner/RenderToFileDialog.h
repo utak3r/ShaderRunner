@@ -1,5 +1,5 @@
-#ifndef SHADERRUNNER_MAINWINDOW_H
-#define SHADERRUNNER_MAINWINDOW_H
+#ifndef SHADERRUNNER_RENDERTOFILE_DLG_H
+#define SHADERRUNNER_RENDERTOFILE_DLG_H
 
 // MIT License
 //
@@ -23,43 +23,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <QMainWindow>
-#include <QEvent>
-#include <QDebug>
+#include <QDialog>
 
 namespace Ui
 	{
-	class srMainWindow;
+	class RenderToFileDialog;
 	}
 
-QT_FORWARD_DECLARE_CLASS(GLViewWidget)
-QT_FORWARD_DECLARE_CLASS(QSplitter)
-
-class srMainWindow : public QMainWindow
+class RenderToFileDialog : public QDialog
 	{
 	Q_OBJECT
 
+	Q_PROPERTY(QString filename READ filename WRITE setFilename)
+	Q_PROPERTY(QSize size READ size WRITE setSize)
+	Q_PROPERTY(double aspectRatio READ aspectRatio WRITE setAspectRatio)
+
 public:
-	explicit srMainWindow(QWidget* aParent = 0);
-	~srMainWindow();
+	explicit RenderToFileDialog(QWidget *aParent = Q_NULLPTR, Qt::WindowFlags aFlags = Qt::WindowFlags());
+	~RenderToFileDialog();
 
-public slots:
-	void exitApp();
-	void OpenShaderSource();
-	void SaveShaderSource();
-	void SaveBufferToImage();
-	void RenderToImage();
+	QString filename() const;
+	void setFilename(const QString& aFilename);
+	QSize size() const;
+	void setSize(const QSize& aSize);
+	double aspectRatio() const { return theAspectRatio; }
+	void setAspectRatio(const double anAspect);
 
-protected:
-	void connectButtons();
-	void decorateSplitter(QSplitter* splitter);
-	void loadConfig();
-	void storeConfig();
+protected slots:
+	void sizeValueChanged(int aValue);
+	void keepAspectRatioToggled(bool aChecked);
 
 private:
-	Ui::srMainWindow *ui;
-	double theAnimStepOnSlider;
+	Ui::RenderToFileDialog *ui;
+	double theAspectRatio;
 	};
 
-
-#endif // SHADERRUNNER_MAINWINDOW_H
+#endif // SHADERRUNNER_RENDERTOFILE_DLG_H

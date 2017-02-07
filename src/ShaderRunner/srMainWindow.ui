@@ -14,14 +14,14 @@
    <string>ShaderRunner</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QWidget" name="">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="GLViewWidget" name="GLWidget" native="true">
           <property name="sizePolicy">
@@ -33,7 +33,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QSlider" name="sldAnimTime">
             <property name="minimum">
@@ -63,71 +63,85 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QPushButton" name="btnRewind">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="ShaderRunner.qrc">
-                <normaloff>:/Player/resources/rewind.png</normaloff>:/Player/resources/rewind.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnPlayPause">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="ShaderRunner.qrc">
-                <normaloff>:/Player/resources/pause.png</normaloff>:/Player/resources/pause.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="cbxShowFPS">
-              <property name="text">
-               <string>Show FPS</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnAspect169">
-              <property name="text">
-               <string>16:9</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnAspect43">
-              <property name="text">
-               <string>4:3</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnAspectSquare">
-              <property name="text">
-               <string>1:1</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QPushButton" name="btnRenderToFile">
+            <property name="text">
+             <string>Render image</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSaveImage">
+            <property name="text">
+             <string>Save image</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="btnRewind">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ShaderRunner.qrc">
+              <normaloff>:/Player/resources/rewind.png</normaloff>:/Player/resources/rewind.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnPlayPause">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ShaderRunner.qrc">
+              <normaloff>:/Player/resources/pause.png</normaloff>:/Player/resources/pause.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cbxShowFPS">
+            <property name="text">
+             <string>Show FPS</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAspect169">
+            <property name="text">
+             <string>16:9</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAspect43">
+            <property name="text">
+             <string>4:3</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAspectSquare">
+            <property name="text">
+             <string>1:1</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -171,13 +185,6 @@
            <widget class="QPushButton" name="btnSave">
             <property name="text">
              <string>Save</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnSaveImage">
-            <property name="text">
-             <string>Save image</string>
             </property>
            </widget>
           </item>

@@ -23,6 +23,7 @@
 #include "GLViewWidget.h"
 #include <QPainter>
 #include <QPaintEngine>
+#include <QOpenGLPaintDevice>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QTimer>
@@ -37,6 +38,7 @@ GLViewWidget::GLViewWidget(QWidget *aParent, const QColor &aBackground)
 	theShaderFragmentFailsafe(""),
 	theShaderProgram(nullptr),
 	theCanvasBuffer(nullptr),
+	theFBO(nullptr),
 	theCanvasTexture(nullptr),
 	theAnimationTimer(nullptr),
 	theGlobalTime(0.f),
@@ -44,7 +46,10 @@ GLViewWidget::GLViewWidget(QWidget *aParent, const QColor &aBackground)
 	theMousePressPos(0, 0),
 	theFPSFrames(0),
 	theShowFPS(false),
-	theAnimationStep(0.1f)
+	theAnimationStep(0.1f),
+	theOffscreenRendering(false),
+	theOffscreenRenderingWidth(0),
+	theOffscreenRenderingHeight(0)
 	{
 	setParent(aParent);
 	setMinimumSize(352, 198);
@@ -68,27 +73,30 @@ void GLViewWidget::setAspectRatio(const double anAspectRatio)
 
 void GLViewWidget::resizeGL(int aWidth, int aHeight)
 	{
-	int cw = aWidth;
-	int ch = aHeight;
-
-	QWidget *container = nullptr;
-	if (parent() != nullptr)
+	if (!theOffscreenRendering)
 		{
-		container = qobject_cast<QWidget *>(parent());
-		cw = container->size().width();
-		ch = container->size().height();
-		}
+		int cw = aWidth;
+		int ch = aHeight;
 
-	int w = cw;
-	int h = int(cw / theAspectRatio);
-	double s = qMin(cw / double(w), ch / double(h));
+		QWidget *container = nullptr;
+		if (parent() != nullptr)
+			{
+			container = qobject_cast<QWidget *>(parent());
+			cw = container->size().width();
+			ch = container->size().height();
+			}
 
-	if (container != nullptr)
-		{
-		setGeometry((cw - int(w*s)) / 2, (ch - int(h*s)) / 2, int(w*s), int(h*s));
+		int w = cw;
+		int h = int(cw / theAspectRatio);
+		double s = qMin(cw / double(w), ch / double(h));
+
+		if (container != nullptr)
+			{
+			setGeometry((cw - int(w*s)) / 2, (ch - int(h*s)) / 2, int(w*s), int(h*s));
+			}
+		else
+			resize(int(w*s), int(h*s));
 		}
-	else
-		resize(int(w*s), int(h*s));
 	}
 
 static const GLfloat vertices[4 * 2] =
@@ -181,8 +189,13 @@ void GLViewWidget::initializeGL()
 
 void GLViewWidget::paintGL()
 	{
-	QPainter painter;
-	painter.begin(this);
+	int renderWidth = theOffscreenRendering ? theOffscreenRenderingWidth : width();
+	int renderHeight = theOffscreenRendering ? theOffscreenRenderingHeight : height();
+
+	QOpenGLPaintDevice fboPaintDev(renderWidth, renderHeight);
+	QPainter painter(&fboPaintDev);
+	//painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+	//painter.begin(this);
 
 	painter.beginNativePainting();
 
@@ -201,7 +214,7 @@ void GLViewWidget::paintGL()
 	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, vertices);
 	glEnableVertexAttribArray(0);
 
-	theShaderProgram->setUniformValue("iResolution", QVector3D(size().width(), size().height(), 0));
+	theShaderProgram->setUniformValue("iResolution", QVector3D(renderWidth, renderHeight, 0));
 	theShaderProgram->setUniformValue("iGlobalTime", GLfloat(theGlobalTime));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -239,6 +252,35 @@ void GLViewWidget::paintGL()
 		}
 
 	update();
+	}
+
+QImage GLViewWidget::renderOffscreen(int aWidth, int aHeight)
+	{
+	makeCurrent();
+	theOffscreenRendering = true;
+	if (!theFBO || theFBO->width() != aWidth || theFBO->height() != aHeight)
+		{
+		if (theFBO)
+			delete theFBO;
+		QOpenGLFramebufferObjectFormat format;
+		format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+		theFBO = new QOpenGLFramebufferObject(aWidth, aHeight, format);		
+		resizeGL(aWidth, aHeight);
+		}
+	theFBO->bind();
+	theOffscreenRenderingWidth = aWidth;
+	theOffscreenRenderingHeight = aHeight;
+	paintGL();
+	QImage img = theFBO->toImage();
+	theFBO->release();
+	theOffscreenRendering = false;
+	doneCurrent();
+	return img;
+	}
+
+QImage GLViewWidget::renderOffscreen(const QSize& aSize)
+	{
+	return renderOffscreen(aSize.width(), aSize.height());
 	}
 
 void GLViewWidget::setFragmentShaderSource(const QString& aFragmentShaderSource)

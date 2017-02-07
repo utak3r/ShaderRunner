@@ -27,6 +27,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
+#include <QOpenGLFramebufferObject>
 #include <QTime>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -57,6 +58,8 @@ public slots:
 	void rewind();
 	double animationStep() const { return theAnimationStep; }
 	void setAnimationStep(double anAnimStep) { theAnimationStep = anAnimStep; }
+	QImage renderOffscreen(int aWidth, int aHeight);
+	QImage renderOffscreen(const QSize& aSize);
 
 protected slots:
 	void timerUpdate();
@@ -76,6 +79,7 @@ private:
 	QLatin1Literal theShaderFragmentFailsafe;
 	QOpenGLShaderProgram *theShaderProgram;
 	QOpenGLBuffer *theCanvasBuffer;
+	QOpenGLFramebufferObject *theFBO;
 	QOpenGLTexture *theCanvasTexture;
 	double theAspectRatio;
 	QTimer *theAnimationTimer;
@@ -85,6 +89,9 @@ private:
 	int theFPSFrames;
 	QTime theFPSTime;
 	double theAnimationStep;
+	bool theOffscreenRendering;
+	int theOffscreenRenderingWidth;
+	int theOffscreenRenderingHeight;
 	};
 
 #endif // GLVIEW_WIDGET_H
