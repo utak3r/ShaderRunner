@@ -57,6 +57,7 @@ protected:
 
 private:
 	Ui::srMainWindow *ui;
+	double theAnimStepOnSlider;
 	};
 
 

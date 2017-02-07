@@ -29,7 +29,8 @@
 
 srMainWindow::srMainWindow(QWidget* aParent) :
 	QMainWindow(aParent),
-	ui(new Ui::srMainWindow)
+	ui(new Ui::srMainWindow),
+	theAnimStepOnSlider(0.f)
 	{
 	ui->setupUi(this);
 	decorateSplitter(ui->splitter);
@@ -78,7 +79,7 @@ void srMainWindow::connectButtons()
 			ui->btnPlayPause->setIcon(QIcon(QStringLiteral(":/Player/resources/pause.png")));
 			}
 		});
-	connect(ui->btnPlayPause, &QPushButton::clicked, [=]()
+	connect(ui->btnRewind, &QPushButton::clicked, [=]()
 		{
 		ui->GLWidget->rewind();
 		});
@@ -99,15 +100,19 @@ void srMainWindow::connectButtons()
 		ui->GLWidget->setShowFPS(aChecked);
 		});
 
-	// Animation time slider
+	// Animation time slider	
+	connect(ui->sldAnimTime, &QSlider::sliderPressed, [=]()
+		{
+		theAnimStepOnSlider = ui->GLWidget->animationStep();
+		});
 	connect(ui->sldAnimTime, &QSlider::sliderMoved, [=](int aValue)
 		{
-		ui->GLWidget->setAnimationStep((aValue != 0) ? aValue : 0.1f);
+		ui->GLWidget->setAnimationStep((aValue != 0) ? aValue : theAnimStepOnSlider);
 		});
 	connect(ui->sldAnimTime, &QSlider::sliderReleased, [=]()
 		{
 		ui->sldAnimTime->setValue(0);
-		ui->GLWidget->setAnimationStep(0.1f);
+		ui->GLWidget->setAnimationStep(theAnimStepOnSlider);
 		});
 	}
 

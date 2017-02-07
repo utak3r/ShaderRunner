@@ -244,7 +244,6 @@ void GLViewWidget::paintGL()
 void GLViewWidget::setFragmentShaderSource(const QString& aFragmentShaderSource)
 	{
 	theAnimationTimer->stop();
-	theGlobalTime = 0.f;
 	theShaderFragment->compileSourceCode(QString(theShaderFragmentTemplate).arg(aFragmentShaderSource));
 
 	theShaderProgram->removeAllShaders();
@@ -276,17 +275,17 @@ void GLViewWidget::timerUpdate()
 
 bool GLViewWidget::isPlaying()
 	{
-	return theAnimationTimer->isActive();
+	return (theAnimationStep != 0);
 	}
 
 void GLViewWidget::play()
 	{
-	theAnimationTimer->start();
+	theAnimationStep = 0.1f;
 	}
 
 void GLViewWidget::pause()
 	{
-	theAnimationTimer->stop();
+	theAnimationStep = 0.f;
 	}
 
 void GLViewWidget::rewind()
