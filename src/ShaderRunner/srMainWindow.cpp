@@ -58,12 +58,12 @@ void srMainWindow::connectButtons()
 		{
 		ui->GLWidget->setFragmentShaderSource(ui->textEdit->toPlainText());
 		});
-	connect(ui->btnOpen, &QPushButton::clicked, this, &srMainWindow::OpenShaderSource);
-	connect(ui->btnSave, &QPushButton::clicked, this, &srMainWindow::SaveShaderSource);
+	connect(ui->btnOpen, &QPushButton::clicked, this, &srMainWindow::openShaderSource);
+	connect(ui->btnSave, &QPushButton::clicked, this, &srMainWindow::saveShaderSource);
 	
 	// Image buttons
-	connect(ui->btnSaveImage, &QPushButton::clicked, this, &srMainWindow::SaveBufferToImage);
-	connect(ui->btnRenderToFile, &QPushButton::clicked, this, &srMainWindow::RenderToImage);
+	connect(ui->btnSaveImage, &QPushButton::clicked, this, &srMainWindow::saveBufferToImage);
+	connect(ui->btnRenderToFile, &QPushButton::clicked, this, &srMainWindow::renderToImage);
 
 	// Player buttons
 	if (ui->GLWidget->isPlaying())
@@ -169,7 +169,7 @@ void srMainWindow::storeConfig()
 	Settings::writeValue(QStringLiteral("Preview"), QStringLiteral("ShowFPS"), ui->GLWidget->showFPS());
 	}
 
-void srMainWindow::OpenShaderSource()
+void srMainWindow::openShaderSource()
 	{
 	QString fileName = QLatin1Literal("");
 	fileName = QFileDialog::getOpenFileName(this, tr("Open shader from file..."), QLatin1Literal("."), tr("Shader source (*.glsl)"));
@@ -189,7 +189,7 @@ void srMainWindow::OpenShaderSource()
 		}
 	}
 
-void srMainWindow::SaveShaderSource()
+void srMainWindow::saveShaderSource()
 	{
 	QString fileName = QLatin1Literal("");
 	fileName = QFileDialog::getSaveFileName(this, tr("Save shader to file..."), QLatin1Literal("."), tr("Shader source (*.glsl)"));
@@ -206,7 +206,7 @@ void srMainWindow::SaveShaderSource()
 		}
 	}
 
-void srMainWindow::SaveBufferToImage()
+void srMainWindow::saveBufferToImage()
 	{
 	QString fileName = QLatin1Literal("");
 	fileName = QFileDialog::getSaveFileName(this, tr("Save image to file..."), QLatin1Literal("."), tr("Image Files (*.png *.jpg *.bmp)"));
@@ -217,7 +217,7 @@ void srMainWindow::SaveBufferToImage()
 		}
 	}
 
-void srMainWindow::RenderToImage()
+void srMainWindow::renderToImage()
 	{
 	RenderToFileDialog dlg;
 	dlg.setAspectRatio(ui->GLWidget->aspectRatio());

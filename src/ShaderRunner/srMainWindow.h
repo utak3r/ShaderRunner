@@ -45,10 +45,10 @@ public:
 
 public slots:
 	void exitApp();
-	void OpenShaderSource();
-	void SaveShaderSource();
-	void SaveBufferToImage();
-	void RenderToImage();
+	void openShaderSource();
+	void saveShaderSource();
+	void saveBufferToImage();
+	void renderToImage();
 
 protected:
 	void connectButtons();
