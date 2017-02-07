@@ -63,6 +63,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="btnRenderToVideo">
+            <property name="text">
+             <string>Render video</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="btnRenderToFile">
             <property name="text">
              <string>Render image</string>

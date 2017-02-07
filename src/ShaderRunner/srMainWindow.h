@@ -49,6 +49,7 @@ public slots:
 	void saveShaderSource();
 	void saveBufferToImage();
 	void renderToImage();
+	void renderToVideo();
 
 protected:
 	void connectButtons();

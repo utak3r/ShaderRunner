@@ -30,6 +30,7 @@ RenderToFileDialog::RenderToFileDialog(QWidget *aParent, Qt::WindowFlags aFlags)
 	theAspectRatio(16.f/9.f)
 	{
 	ui->setupUi(this);
+	setTitle(QLatin1Literal("Render to file..."));
 	connect(ui->txtWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &RenderToFileDialog::sizeValueChanged);
 	connect(ui->txtHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &RenderToFileDialog::sizeValueChanged);
 	connect(ui->cbxKeepAspect, &QCheckBox::toggled, this, &RenderToFileDialog::keepAspectRatioToggled);
@@ -38,6 +39,11 @@ RenderToFileDialog::RenderToFileDialog(QWidget *aParent, Qt::WindowFlags aFlags)
 RenderToFileDialog::~RenderToFileDialog()
 	{
 	delete ui;
+	}
+
+void RenderToFileDialog::setTitle(const QString& aTitle)
+	{
+	setWindowTitle(aTitle);
 	}
 
 QString RenderToFileDialog::filename() const
@@ -94,4 +100,33 @@ void RenderToFileDialog::keepAspectRatioToggled(bool aChecked)
 	{
 	if (aChecked)
 		setAspectRatio(theAspectRatio);
+	}
+
+void RenderToFileDialog::setVideoOptionsVisible(bool aVisible)
+	{
+	if (aVisible)
+		ui->grpVideoOptions->show();
+	else
+		ui->grpVideoOptions->hide();
+	}
+
+double RenderToFileDialog::framerate() const
+	{
+	return ui->txtFramerate->value();
+	}
+
+void RenderToFileDialog::setFramerate(double aFramerate)
+	{
+	if (aFramerate > 0)
+		ui->txtFramerate->setValue(aFramerate);
+	}
+
+QString RenderToFileDialog::ffmpegPath() const
+	{
+	return ui->txtFfmpeg->text();
+	}
+
+void RenderToFileDialog::setFfmpegPath(const QString& aPath)
+	{
+	ui->txtFfmpeg->setText(aPath);
 	}

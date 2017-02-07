@@ -25,6 +25,8 @@
 #include <GLViewWidget.h>
 #include <QFileDialog>
 #include <QSplitter>
+#include <QProcess>
+#include <QBuffer>
 #include "settings.h"
 #include "RenderToFileDialog.h"
 
@@ -64,6 +66,7 @@ void srMainWindow::connectButtons()
 	// Image buttons
 	connect(ui->btnSaveImage, &QPushButton::clicked, this, &srMainWindow::saveBufferToImage);
 	connect(ui->btnRenderToFile, &QPushButton::clicked, this, &srMainWindow::renderToImage);
+	connect(ui->btnRenderToVideo, &QPushButton::clicked, this, &srMainWindow::renderToVideo);
 
 	// Player buttons
 	if (ui->GLWidget->isPlaying())
@@ -220,6 +223,7 @@ void srMainWindow::saveBufferToImage()
 void srMainWindow::renderToImage()
 	{
 	RenderToFileDialog dlg;
+	dlg.setVideoOptionsVisible(false);
 	dlg.setAspectRatio(ui->GLWidget->aspectRatio());
 	if ((QDialog::DialogCode)dlg.exec() == QDialog::Accepted)
 		{
@@ -227,5 +231,72 @@ void srMainWindow::renderToImage()
 		QSize size = dlg.size();
 		QImage img = ui->GLWidget->renderOffscreen(size);
 		img.save(dlg.filename());
+		}
+	}
+
+void srMainWindow::renderToVideo()
+	{
+	RenderToFileDialog dlg;
+	dlg.setVideoOptionsVisible(true);
+	dlg.setAspectRatio(ui->GLWidget->aspectRatio());
+	if (Settings::containsValue(QStringLiteral("Video"), QStringLiteral("Framerate")))
+		dlg.setFramerate(Settings::readValue(QStringLiteral("Video"), QStringLiteral("Framerate")).toDouble());
+	if (Settings::containsValue(QStringLiteral("Video"), QStringLiteral("ffmpeg")))
+		dlg.setFfmpegPath(Settings::readValue(QStringLiteral("Video"), QStringLiteral("ffmpeg")).toString());
+
+	if ((QDialog::DialogCode)dlg.exec() == QDialog::Accepted)
+		{
+		QString filename = dlg.filename();
+		QSize size = dlg.size();
+		double framerate = dlg.framerate();
+		Settings::writeValue(QStringLiteral("Video"), QStringLiteral("Framerate"), framerate);
+		Settings::writeValue(QStringLiteral("Video"), QStringLiteral("ffmpeg"), dlg.ffmpegPath());
+		//QImage img = ui->GLWidget->renderOffscreen(size);
+		//img.save(dlg.filename());
+
+		QString encodingexe = dlg.ffmpegPath();
+		QStringList encodingArgs;
+		// input are individual frames through the pipe
+		encodingArgs << QStringLiteral("-y");
+		encodingArgs << QStringLiteral("-f") << QStringLiteral("image2pipe");
+		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("mjpeg");
+		encodingArgs << QStringLiteral("-r") << QString::number(framerate, 'f', 2);
+		encodingArgs << QStringLiteral("-i") << QStringLiteral("-");
+		//encodingArgs << QStringLiteral("-i") << QStringLiteral("\\\\.\\pipe\\\\video_pipe");
+		// output is an x264 MPEG4
+		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("libx264");
+		encodingArgs << QStringLiteral("-preset") << QStringLiteral("ultrafast");
+		encodingArgs << QStringLiteral("-f") << QStringLiteral("mp4");
+		encodingArgs << QStringLiteral("-vf") << QStringLiteral("scale=1920x1080,setdar=16:9");
+		encodingArgs << QStringLiteral("-r") << QStringLiteral("25");
+		encodingArgs << QStringLiteral("outputVideo.mp4");
+
+		QProcess *encoder = new QProcess(this);
+		encoder->setProcessChannelMode(QProcess::MergedChannels);
+		connect(encoder, &QProcess::readyReadStandardOutput, [=]()
+			{
+			qDebug() << encoder->readAllStandardOutput();
+			});
+		connect(encoder, &QProcess::readyReadStandardError, [=]()
+			{
+			qDebug() << encoder->readAllStandardError();
+			});
+		encoder->start(encodingexe, encodingArgs);
+		encoder->waitForStarted(2000);
+
+		ui->GLWidget->pause();
+		ui->GLWidget->rewind();
+		QBuffer buffer;
+		for (int i = 0; i < 100; ++i)
+			{
+			QImage img = ui->GLWidget->renderOffscreen(size);
+			img.save(&buffer, "JPG", 85);
+			encoder->write(buffer.buffer());
+			}
+		encoder->closeWriteChannel();
+		encoder->terminate();
+		if (encoder->waitForFinished())
+			qDebug() << encoder->readAll();
+
 		}
 	}
