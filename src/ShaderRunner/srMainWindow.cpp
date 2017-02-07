@@ -111,7 +111,7 @@ void srMainWindow::connectButtons()
 		});
 	connect(ui->sldAnimTime, &QSlider::sliderMoved, [=](int aValue)
 		{
-		ui->GLWidget->setAnimationStep((aValue != 0) ? aValue : theAnimStepOnSlider);
+		ui->GLWidget->setAnimationStep((aValue != 0) ? aValue / 5.f : theAnimStepOnSlider);
 		});
 	connect(ui->sldAnimTime, &QSlider::sliderReleased, [=]()
 		{
