@@ -42,16 +42,28 @@ public:
 	explicit RenderToFileDialog(QWidget *aParent = Q_NULLPTR, Qt::WindowFlags aFlags = Qt::WindowFlags());
 	~RenderToFileDialog();
 
+	void setTitle(const QString& aTitle);
 	QString filename() const;
 	void setFilename(const QString& aFilename);
 	QSize size() const;
 	void setSize(const QSize& aSize);
 	double aspectRatio() const { return theAspectRatio; }
 	void setAspectRatio(const double anAspect);
+	void setVideoOptionsVisible(bool aVisible);
+	double framerate() const;
+	void setFramerate(double aFramerate);
+	double duration() const;
+	void setDuration(double aDuration);
+	QString ffmpegPath() const;
+	void setFfmpegPath(const QString& aPath);
+	double oversampling() const;
+	void setOversampling(double aValue);
 
 protected slots:
 	void sizeValueChanged(int aValue);
 	void keepAspectRatioToggled(bool aChecked);
+	void browseForFile();
+	void browseForFfmpeg();
 
 private:
 	Ui::RenderToFileDialog *ui;

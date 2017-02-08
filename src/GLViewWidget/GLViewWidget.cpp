@@ -335,6 +335,11 @@ void GLViewWidget::rewind()
 	theGlobalTime = 0.f;
 	}
 
+void GLViewWidget::jogAnimation(double aStep)
+	{
+	theGlobalTime += aStep;
+	}
+
 void GLViewWidget::mousePressEvent(QMouseEvent *event)
 	{
 	QPoint pos = event->pos();

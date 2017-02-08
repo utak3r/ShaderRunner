@@ -58,6 +58,7 @@ public slots:
 	void rewind();
 	double animationStep() const { return theAnimationStep; }
 	void setAnimationStep(double anAnimStep) { theAnimationStep = anAnimStep; }
+	void jogAnimation(double aStep);
 	QImage renderOffscreen(int aWidth, int aHeight);
 	QImage renderOffscreen(const QSize& aSize);
 

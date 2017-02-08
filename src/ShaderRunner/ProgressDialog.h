@@ -1,5 +1,5 @@
-#ifndef SHADERRUNNER_MAINWINDOW_H
-#define SHADERRUNNER_MAINWINDOW_H
+#ifndef SHADERRUNNER_PROGRESS_DLG
+#define SHADERRUNNER_PROGRESS_DLG
 
 // MIT License
 //
@@ -23,44 +23,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <QMainWindow>
-#include <QEvent>
-#include <QDebug>
+#include <QDialog>
 
 namespace Ui
 	{
-	class srMainWindow;
+	class ProgressDialog;
 	}
 
-QT_FORWARD_DECLARE_CLASS(GLViewWidget)
-QT_FORWARD_DECLARE_CLASS(QSplitter)
-
-class srMainWindow : public QMainWindow
+class ProgressDialog : public QDialog
 	{
 	Q_OBJECT
 
-public:
-	explicit srMainWindow(QWidget* aParent = 0);
-	~srMainWindow();
+	public:
+		explicit ProgressDialog(QWidget *aParent = Q_NULLPTR, Qt::WindowFlags aFlags = Qt::WindowFlags());
+		~ProgressDialog();
 
-public slots:
-	void exitApp();
-	void openShaderSource();
-	void saveShaderSource();
-	void saveBufferToImage();
-	void renderToImage();
-	void renderToVideo();
+		void setTitle(const QString& aTitle);
+		void setLogVisible(bool aVisible);
 
-protected:
-	void connectButtons();
-	void decorateSplitter(QSplitter* splitter);
-	void loadConfig();
-	void storeConfig();
+	public slots:
+		void addLog(const QString& aMesg);
+		void setRange(int aMin, int aMax);
+		void setValue(int aValue);
+		void readStandardOutput();
+		void readStandardError();
 
-private:
-	Ui::srMainWindow *ui;
-	double theAnimStepOnSlider;
+	private:
+		Ui::ProgressDialog *ui;
+
 	};
 
-
-#endif // SHADERRUNNER_MAINWINDOW_H
+#endif // SHADERRUNNER_PROGRESS_DLG
