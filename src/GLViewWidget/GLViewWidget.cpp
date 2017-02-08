@@ -112,7 +112,7 @@ void GLViewWidget::initializeGL()
 	initializeOpenGLFunctions();
 
 	theShaderVertex = new QOpenGLShader(QOpenGLShader::Vertex);
-	theShaderVertex->compileSourceCode(QLatin1Literal("#version 130\n" \
+	theShaderVertex->compileSourceCode(QLatin1Literal("#version 120\n" \
 														"attribute vec3 position;\n" \
 														"void main()\n" \
 														"{\n" \
@@ -120,7 +120,7 @@ void GLViewWidget::initializeGL()
 														"}\n")
 										);
 
-	theShaderFragmentTemplate = QLatin1Literal("#version 130\n" \
+	theShaderFragmentTemplate = QLatin1Literal("#version 120\n" \
 												"uniform vec3 iResolution;				// viewport resolution (in pixels)\n" \
 												"uniform float iGlobalTime;				// shader playback time (in seconds)\n" \
 												"uniform vec4 iMouse;					// mouse pixel coords\n" \
