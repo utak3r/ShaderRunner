@@ -27,6 +27,7 @@
 #include <QSplitter>
 #include <QProcess>
 #include <QBuffer>
+#include <QByteArray>
 #include "settings.h"
 #include "RenderToFileDialog.h"
 
@@ -257,19 +258,39 @@ void srMainWindow::renderToVideo()
 		QString encodingexe = dlg.ffmpegPath();
 		QStringList encodingArgs;
 		// input are individual frames through the pipe
+		// ffmpeg -threads 0 -loglevel panic -r 30 -f rawvideo -pix_fmt rgba -s 800x450 -i - -c:v libx264 -preset medium -tune animation -y testrnd.mp4
+		encodingArgs << QStringLiteral("-threads") << QStringLiteral("0");
+		//encodingArgs << QStringLiteral("-loglevel") << QStringLiteral("panic");
+		encodingArgs << QStringLiteral("-r") << QStringLiteral("30");
+		encodingArgs << QStringLiteral("-f") << QStringLiteral("rawvideo");
+		//encodingArgs << QStringLiteral("-f") << QStringLiteral("image2pipe");
+		encodingArgs << QStringLiteral("-pix_fmt") << QStringLiteral("rgba");
+		//encodingArgs << QStringLiteral("-pix_fmt") << QStringLiteral("rgb24");
+		encodingArgs << QStringLiteral("-s") << QStringLiteral("800x450");
+		encodingArgs << QStringLiteral("-i") << QStringLiteral("-");
+		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("libx264");
+		encodingArgs << QStringLiteral("-preset") << QStringLiteral("medium");
+		encodingArgs << QStringLiteral("-tune") << QStringLiteral("animation");
+		encodingArgs << QStringLiteral("-y") << QStringLiteral("testrnd.mp4");
+		
+		/*
 		encodingArgs << QStringLiteral("-y");
 		encodingArgs << QStringLiteral("-f") << QStringLiteral("image2pipe");
+		encodingArgs << QStringLiteral("-pix_fmt") << QStringLiteral("rgb24");
+		//encodingArgs << QStringLiteral("-c:v") << QStringLiteral("rawvideo");
+		//encodingArgs << QStringLiteral("-s") << QStringLiteral("800x450");
 		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("mjpeg");
-		encodingArgs << QStringLiteral("-r") << QString::number(framerate, 'f', 2);
+		//encodingArgs << QStringLiteral("-r") << QString::number(framerate, 'f', 2);
 		encodingArgs << QStringLiteral("-i") << QStringLiteral("-");
 		//encodingArgs << QStringLiteral("-i") << QStringLiteral("\\\\.\\pipe\\\\video_pipe");
 		// output is an x264 MPEG4
 		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("libx264");
-		encodingArgs << QStringLiteral("-preset") << QStringLiteral("ultrafast");
+		encodingArgs << QStringLiteral("-preset") << QStringLiteral("medium");
+		encodingArgs << QStringLiteral("-tune") << QStringLiteral("animation");
 		encodingArgs << QStringLiteral("-f") << QStringLiteral("mp4");
-		encodingArgs << QStringLiteral("-vf") << QStringLiteral("scale=1920x1080,setdar=16:9");
-		encodingArgs << QStringLiteral("-r") << QStringLiteral("25");
-		encodingArgs << QStringLiteral("outputVideo.mp4");
+		//encodingArgs << QStringLiteral("-vf") << QStringLiteral("scale=800x450,setdar=16:9");
+		encodingArgs << QStringLiteral("-r") << QString::number(framerate, 'f', 2);
+		encodingArgs << QStringLiteral("outputVideo.mp4");*/
 
 		QProcess *encoder = new QProcess(this);
 		encoder->setProcessChannelMode(QProcess::MergedChannels);
@@ -286,12 +307,17 @@ void srMainWindow::renderToVideo()
 
 		ui->GLWidget->pause();
 		ui->GLWidget->rewind();
-		QBuffer buffer;
+
+		QByteArray bytesArray;
+		QBuffer buffer(&bytesArray);
+		buffer.open(QIODevice::WriteOnly);
 		for (int i = 0; i < 100; ++i)
 			{
-			QImage img = ui->GLWidget->renderOffscreen(size);
-			img.save(&buffer, "JPG", 85);
+			QImage img = ui->GLWidget->renderOffscreen(QSize(800,450));
+			img.save(&buffer, "BMP", -1);
 			encoder->write(buffer.buffer());
+			ui->GLWidget->jogAnimation(1.0 / framerate);
+			qDebug() << "Image" << i + 1 << "saved.";
 			}
 		encoder->closeWriteChannel();
 		encoder->terminate();
