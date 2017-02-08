@@ -166,7 +166,12 @@ void RenderToFileDialog::browseForFile()
 		title = tr("Save video to...");
 		filter = tr("Video files (*.mp4)");
 		}
+#ifdef Q_OS_WIN
 	setFilename(QFileDialog::getSaveFileName(this, title, QLatin1Literal("."), filter));
+#endif // Q_OS_WIN
+#ifdef Q_OS_LINUX
+	setFilename(QFileDialog::getSaveFileName(this, title, QLatin1Literal("."), filter, Q_NULLPTR, QFileDialog::DontUseNativeDialog));
+#endif // Q_OS_LINUX
 	}
 
 void RenderToFileDialog::browseForFfmpeg()
@@ -178,6 +183,11 @@ void RenderToFileDialog::browseForFfmpeg()
 #ifdef Q_OS_LINUX
 	QString filter = tr("Executable files (*)");
 #endif // Q_OS_LINUX
+#ifdef Q_OS_WIN
 	setFfmpegPath(QFileDialog::getOpenFileName(this, title, QLatin1Literal("."), filter));
+#endif // Q_OS_WIN
+#ifdef Q_OS_LINUX
+	setFfmpegPath(QFileDialog::getOpenFileName(this, title, QLatin1Literal("."), filter, Q_NULLPTR, QFileDialog::DontUseNativeDialog));
+#endif // Q_OS_LINUX
 	}
 

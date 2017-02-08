@@ -179,7 +179,12 @@ void srMainWindow::storeConfig()
 void srMainWindow::openShaderSource()
 	{
 	QString fileName = QLatin1Literal("");
+#ifdef Q_OS_WIN
 	fileName = QFileDialog::getOpenFileName(this, tr("Open shader from file..."), QLatin1Literal("."), tr("Shader source (*.glsl)"));
+#endif // Q_OS_WIN
+#ifdef Q_OS_LINUX
+	fileName = QFileDialog::getOpenFileName(this, tr("Open shader from file..."), QLatin1Literal("."), tr("Shader source (*.glsl)"), Q_NULLPTR, QFileDialog::DontUseNativeDialog);
+#endif // Q_OS_LINUX
 	if (fileName != QLatin1Literal(""))
 		{
 		QFile file(fileName);
@@ -199,7 +204,12 @@ void srMainWindow::openShaderSource()
 void srMainWindow::saveShaderSource()
 	{
 	QString fileName = QLatin1Literal("");
+#ifdef Q_OS_WIN
 	fileName = QFileDialog::getSaveFileName(this, tr("Save shader to file..."), QLatin1Literal("."), tr("Shader source (*.glsl)"));
+#endif // Q_OS_WIN
+#ifdef Q_OS_LINUX
+	fileName = QFileDialog::getSaveFileName(this, tr("Save shader to file..."), QLatin1Literal("."), tr("Shader source (*.glsl)"), Q_NULLPTR, QFileDialog::DontUseNativeDialog);
+#endif // Q_OS_LINUX
 	if (fileName != QLatin1Literal(""))
 		{
 		QFile file(fileName);
@@ -216,7 +226,12 @@ void srMainWindow::saveShaderSource()
 void srMainWindow::saveBufferToImage()
 	{
 	QString fileName = QLatin1Literal("");
+#ifdef Q_OS_WIN
 	fileName = QFileDialog::getSaveFileName(this, tr("Save image to file..."), QLatin1Literal("."), tr("Image Files (*.png *.jpg *.bmp)"));
+#endif // Q_OS_WIN
+#ifdef Q_OS_LINUX
+	fileName = QFileDialog::getSaveFileName(this, tr("Save image to file..."), QLatin1Literal("."), tr("Image Files (*.png *.jpg *.bmp)"), Q_NULLPTR, QFileDialog::DontUseNativeDialog);
+#endif // Q_OS_LINUX
 	if (fileName != QLatin1Literal(""))
 		{
 		QImage img = ui->GLWidget->grabFramebuffer();
