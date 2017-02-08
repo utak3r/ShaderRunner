@@ -1,0 +1,18 @@
+#!/bin/bash
+
+export ROOT_PATH=$(pwd)
+export INSTALL_DIR=/usr/local/bin
+
+export QMAKESPEC=linux-g++-64
+export QTDIR=/usr/lib/qt
+export QTVER=570
+
+export CMAKECFGDIR=/usr/lib/cmake
+
+mkdir build-Linux
+cd build-Linux
+warn=
+warn=-Wno-dev
+cmake $warn -G "Unix Makefiles" -DCMAKE_BINARY_DIR:PATH=. -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR -DCMAKE_PREFIX_PATH=/usr/lib/cmake ..
+cd ..
+

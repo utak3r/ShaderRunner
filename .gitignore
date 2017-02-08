@@ -1,5 +1,6 @@
 build_logs/
 build-VisualStudio/
+build-Linux/
 distrib.install/
 set_user_paths.cmd
 

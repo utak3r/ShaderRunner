@@ -18,4 +18,5 @@ target_link_libraries (GLViewWidget LINK_PUBLIC
 install (
 		TARGETS GLViewWidget
 		RUNTIME DESTINATION .
+		LIBRARY DESTINATION .
 		)
