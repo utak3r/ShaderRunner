@@ -52,12 +52,18 @@ public:
 	void setVideoOptionsVisible(bool aVisible);
 	double framerate() const;
 	void setFramerate(double aFramerate);
+	double duration() const;
+	void setDuration(double aDuration);
 	QString ffmpegPath() const;
 	void setFfmpegPath(const QString& aPath);
+	double oversampling() const;
+	void setOversampling(double aValue);
 
 protected slots:
 	void sizeValueChanged(int aValue);
 	void keepAspectRatioToggled(bool aChecked);
+	void browseForFile();
+	void browseForFfmpeg();
 
 private:
 	Ui::RenderToFileDialog *ui;

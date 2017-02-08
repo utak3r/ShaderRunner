@@ -28,8 +28,11 @@
 #include <QProcess>
 #include <QBuffer>
 #include <QByteArray>
+#include <QTemporaryDir>
+#include <QTextCodec>
 #include "settings.h"
 #include "RenderToFileDialog.h"
+#include "ProgressDialog.h"
 
 srMainWindow::srMainWindow(QWidget* aParent) :
 	QMainWindow(aParent),
@@ -226,11 +229,15 @@ void srMainWindow::renderToImage()
 	RenderToFileDialog dlg;
 	dlg.setVideoOptionsVisible(false);
 	dlg.setAspectRatio(ui->GLWidget->aspectRatio());
+	dlg.setFilename(QLatin1Literal("render.jpg"));
 	if ((QDialog::DialogCode)dlg.exec() == QDialog::Accepted)
 		{
 		QString filename = dlg.filename();
 		QSize size = dlg.size();
-		QImage img = ui->GLWidget->renderOffscreen(size);
+		double oversampling = dlg.oversampling();
+		QImage img = ui->GLWidget->renderOffscreen(size*oversampling);
+		if (oversampling > 1)
+			img = img.scaled(size);
 		img.save(dlg.filename());
 		}
 	}
@@ -244,85 +251,74 @@ void srMainWindow::renderToVideo()
 		dlg.setFramerate(Settings::readValue(QStringLiteral("Video"), QStringLiteral("Framerate")).toDouble());
 	if (Settings::containsValue(QStringLiteral("Video"), QStringLiteral("ffmpeg")))
 		dlg.setFfmpegPath(Settings::readValue(QStringLiteral("Video"), QStringLiteral("ffmpeg")).toString());
+	dlg.setFilename(QLatin1Literal("render.mp4"));
+	dlg.setSize(QSize(1280,720));
 
 	if ((QDialog::DialogCode)dlg.exec() == QDialog::Accepted)
 		{
 		QString filename = dlg.filename();
 		QSize size = dlg.size();
+		double oversampling = dlg.oversampling();
 		double framerate = dlg.framerate();
 		Settings::writeValue(QStringLiteral("Video"), QStringLiteral("Framerate"), framerate);
 		Settings::writeValue(QStringLiteral("Video"), QStringLiteral("ffmpeg"), dlg.ffmpegPath());
-		//QImage img = ui->GLWidget->renderOffscreen(size);
-		//img.save(dlg.filename());
+		int frames = dlg.duration() * framerate;
+		QString resolution = QStringLiteral("%1x%2").arg(size.width()).arg(size.height());
 
-		QString encodingexe = dlg.ffmpegPath();
-		QStringList encodingArgs;
-		// input are individual frames through the pipe
-		// ffmpeg -threads 0 -loglevel panic -r 30 -f rawvideo -pix_fmt rgba -s 800x450 -i - -c:v libx264 -preset medium -tune animation -y testrnd.mp4
-		encodingArgs << QStringLiteral("-threads") << QStringLiteral("0");
-		//encodingArgs << QStringLiteral("-loglevel") << QStringLiteral("panic");
-		encodingArgs << QStringLiteral("-r") << QStringLiteral("30");
-		encodingArgs << QStringLiteral("-f") << QStringLiteral("rawvideo");
-		//encodingArgs << QStringLiteral("-f") << QStringLiteral("image2pipe");
-		encodingArgs << QStringLiteral("-pix_fmt") << QStringLiteral("rgba");
-		//encodingArgs << QStringLiteral("-pix_fmt") << QStringLiteral("rgb24");
-		encodingArgs << QStringLiteral("-s") << QStringLiteral("800x450");
-		encodingArgs << QStringLiteral("-i") << QStringLiteral("-");
-		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("libx264");
-		encodingArgs << QStringLiteral("-preset") << QStringLiteral("medium");
-		encodingArgs << QStringLiteral("-tune") << QStringLiteral("animation");
-		encodingArgs << QStringLiteral("-y") << QStringLiteral("testrnd.mp4");
-		
-		/*
-		encodingArgs << QStringLiteral("-y");
-		encodingArgs << QStringLiteral("-f") << QStringLiteral("image2pipe");
-		encodingArgs << QStringLiteral("-pix_fmt") << QStringLiteral("rgb24");
-		//encodingArgs << QStringLiteral("-c:v") << QStringLiteral("rawvideo");
-		//encodingArgs << QStringLiteral("-s") << QStringLiteral("800x450");
-		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("mjpeg");
-		//encodingArgs << QStringLiteral("-r") << QString::number(framerate, 'f', 2);
-		encodingArgs << QStringLiteral("-i") << QStringLiteral("-");
-		//encodingArgs << QStringLiteral("-i") << QStringLiteral("\\\\.\\pipe\\\\video_pipe");
-		// output is an x264 MPEG4
-		encodingArgs << QStringLiteral("-c:v") << QStringLiteral("libx264");
-		encodingArgs << QStringLiteral("-preset") << QStringLiteral("medium");
-		encodingArgs << QStringLiteral("-tune") << QStringLiteral("animation");
-		encodingArgs << QStringLiteral("-f") << QStringLiteral("mp4");
-		//encodingArgs << QStringLiteral("-vf") << QStringLiteral("scale=800x450,setdar=16:9");
-		encodingArgs << QStringLiteral("-r") << QString::number(framerate, 'f', 2);
-		encodingArgs << QStringLiteral("outputVideo.mp4");*/
-
-		QProcess *encoder = new QProcess(this);
-		encoder->setProcessChannelMode(QProcess::MergedChannels);
-		connect(encoder, &QProcess::readyReadStandardOutput, [=]()
+		QTemporaryDir dir;
+		if (dir.isValid())
 			{
-			qDebug() << encoder->readAllStandardOutput();
-			});
-		connect(encoder, &QProcess::readyReadStandardError, [=]()
-			{
-			qDebug() << encoder->readAllStandardError();
-			});
-		encoder->start(encodingexe, encodingArgs);
-		encoder->waitForStarted(2000);
+			ProgressDialog progress;
+			progress.setTitle(QLatin1Literal("Rendering individual frames..."));
+			progress.setRange(0, frames);
+			progress.setValue(0);
+			progress.show();
 
-		ui->GLWidget->pause();
-		ui->GLWidget->rewind();
+			QString dirpath = dir.path();
+			qDebug() << "Temporary dir:" << dirpath;
+			for (int i = 0; i < frames; ++i)
+				{
+				progress.setValue(i);
+				progress.addLog(QStringLiteral("Rendering frame %1 out of %2...").arg(i+1).arg(frames));
+				QImage img = ui->GLWidget->renderOffscreen(size*oversampling);
+				if (oversampling > 1)
+					img = img.scaled(size);
+				QString filename = QStringLiteral("%1/frame%2.ppm").arg(dirpath).arg(i + 1, 6, 10, QLatin1Char('0'));
+				qDebug() << "Filename:" << filename;
+				img.save(filename, "PPM");
+				ui->GLWidget->jogAnimation(1.0 / framerate);
+				qDebug() << "Image" << i + 1 << "saved.";				
+				}
 
-		QByteArray bytesArray;
-		QBuffer buffer(&bytesArray);
-		buffer.open(QIODevice::WriteOnly);
-		for (int i = 0; i < 100; ++i)
-			{
-			QImage img = ui->GLWidget->renderOffscreen(QSize(800,450));
-			img.save(&buffer, "BMP", -1);
-			encoder->write(buffer.buffer());
-			ui->GLWidget->jogAnimation(1.0 / framerate);
-			qDebug() << "Image" << i + 1 << "saved.";
+			QString encodingexe = dlg.ffmpegPath();
+			QStringList encodingArgs;
+			encodingArgs << QStringLiteral("-r") << QStringLiteral("%1").arg(framerate, 0, 'g', 2);
+			encodingArgs << QStringLiteral("-f") << QStringLiteral("image2");
+			encodingArgs << QStringLiteral("-s") << resolution;
+			encodingArgs << QStringLiteral("-i") << QStringLiteral("%1/frame%06d.ppm").arg(dirpath);
+			encodingArgs << QStringLiteral("-c:v") << QStringLiteral("libx264");
+			encodingArgs << QStringLiteral("-preset") << QStringLiteral("medium");
+			encodingArgs << QStringLiteral("-tune") << QStringLiteral("animation");
+			encodingArgs << QStringLiteral("-y");
+			encodingArgs << filename;
+			qDebug() << "ffmpeg args:" << encodingArgs;
+
+			progress.setTitle(QLatin1Literal("Encoding video..."));
+			progress.setRange(0, 0);
+			progress.setValue(0);
+			QProcess *encoder = new QProcess(this);
+			encoder->setProcessChannelMode(QProcess::MergedChannels);
+			connect(encoder, &QProcess::readyReadStandardOutput, &progress, &ProgressDialog::readStandardOutput);
+			connect(encoder, &QProcess::readyReadStandardError, &progress, &ProgressDialog::readStandardError);
+			encoder->start(encodingexe, encodingArgs);
+			encoder->waitForStarted(2000);
+			if (encoder->waitForFinished())
+				qDebug() << encoder->readAll();
+
+			dir.remove();
+			qDebug() << "Video encoding done.";
+			progress.close();
 			}
-		encoder->closeWriteChannel();
-		encoder->terminate();
-		if (encoder->waitForFinished())
-			qDebug() << encoder->readAll();
 
 		}
 	}

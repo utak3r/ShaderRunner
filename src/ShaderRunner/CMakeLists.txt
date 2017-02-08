@@ -14,6 +14,9 @@ add_executable (ShaderRunner ${GUI_TYPE}
 					RenderToFileDialog.cpp
 					RenderToFileDialog.h
 					RenderToFileDialog.ui
+					ProgressDialog.cpp
+					ProgressDialog.h
+					ProgressDialog.ui
 					)
 set_property (TARGET ShaderRunner PROPERTY FOLDER "Shader_App")
 

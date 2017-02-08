@@ -22,6 +22,7 @@
 
 #include "RenderToFileDialog.h"
 #include "ui_RenderToFileDialog.h"
+#include <QFileDialog>
 
 RenderToFileDialog::RenderToFileDialog(QWidget *aParent, Qt::WindowFlags aFlags)
 	:
@@ -34,6 +35,8 @@ RenderToFileDialog::RenderToFileDialog(QWidget *aParent, Qt::WindowFlags aFlags)
 	connect(ui->txtWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &RenderToFileDialog::sizeValueChanged);
 	connect(ui->txtHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &RenderToFileDialog::sizeValueChanged);
 	connect(ui->cbxKeepAspect, &QCheckBox::toggled, this, &RenderToFileDialog::keepAspectRatioToggled);
+	connect(ui->btnBrowse, &QPushButton::clicked, this, &RenderToFileDialog::browseForFile);
+	connect(ui->btnFindFfmpeg, &QPushButton::clicked, this, &RenderToFileDialog::browseForFfmpeg);
 	}
 
 RenderToFileDialog::~RenderToFileDialog()
@@ -121,6 +124,17 @@ void RenderToFileDialog::setFramerate(double aFramerate)
 		ui->txtFramerate->setValue(aFramerate);
 	}
 
+double RenderToFileDialog::duration() const
+	{
+	return ui->txtDuration->value();
+	}
+
+void RenderToFileDialog::setDuration(double aDuration)
+	{
+	if (aDuration > 0)
+		ui->txtDuration->setValue(aDuration);
+	}
+
 QString RenderToFileDialog::ffmpegPath() const
 	{
 	return ui->txtFfmpeg->text();
@@ -130,3 +144,40 @@ void RenderToFileDialog::setFfmpegPath(const QString& aPath)
 	{
 	ui->txtFfmpeg->setText(aPath);
 	}
+
+double RenderToFileDialog::oversampling() const
+	{
+	return ui->txtOversampling->value();
+	}
+
+void RenderToFileDialog::setOversampling(double aValue)
+	{
+	ui->txtOversampling->setValue(aValue);
+	}
+
+void RenderToFileDialog::browseForFile()
+	{
+	bool video = false;
+	QString title = tr("Save image to...");
+	QString filter = tr("Image files (*.jpg)");
+	if (ui->grpVideoOptions->isVisible())
+		{
+		video = true;
+		title = tr("Save video to...");
+		filter = tr("Video files (*.mp4)");
+		}
+	setFilename(QFileDialog::getSaveFileName(this, title, QLatin1Literal("."), filter));
+	}
+
+void RenderToFileDialog::browseForFfmpeg()
+	{
+	QString title = tr("Find the ffmpeg executable");
+#ifdef Q_OS_WIN
+	QString filter = tr("Executable files (*.exe)");
+#endif // Q_OS_WIN
+#ifdef Q_OS_LINUX
+	QString filter = tr("Executable files (*)");
+#endif // Q_OS_LINUX
+	setFfmpegPath(QFileDialog::getOpenFileName(this, title, QLatin1Literal("."), filter));
+	}
+

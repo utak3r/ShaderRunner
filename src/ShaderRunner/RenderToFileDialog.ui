@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
-    <height>236</height>
+    <width>489</width>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_6">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -87,6 +87,36 @@
              <bool>true</bool>
             </property>
            </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Oversampling</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="txtOversampling">
+              <property name="toolTip">
+               <string>Enter 1 for no oversampling.</string>
+              </property>
+              <property name="toolTipDuration">
+               <number>2</number>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>8</number>
+              </property>
+              <property name="value">
+               <number>2</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -170,6 +200,29 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Duration (s):</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="txtDuration">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="minimum">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>3600.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>30.000000000000000</double>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
@@ -182,7 +235,14 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="txtFfmpeg"/>
+             <widget class="QLineEdit" name="txtFfmpeg">
+              <property name="toolTip">
+               <string>Enter the path to ffmpeg executable</string>
+              </property>
+              <property name="toolTipDuration">
+               <number>3</number>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btnFindFfmpeg">
@@ -225,14 +285,8 @@
    </item>
   </layout>
   <zorder>buttonBox</zorder>
-  <zorder>groupBox</zorder>
-  <zorder>groupBox_2</zorder>
-  <zorder>verticalSpacer</zorder>
-  <zorder>verticalSpacer_2</zorder>
-  <zorder>grpVideoOptions</zorder>
-  <zorder>label_3</zorder>
-  <zorder>grpVideoOptions</zorder>
-  <zorder>cbxKeepAspect</zorder>
+  <zorder></zorder>
+  <zorder></zorder>
  </widget>
  <resources/>
  <connections>
